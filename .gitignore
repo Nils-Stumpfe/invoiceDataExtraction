@@ -1,5 +1,6 @@
 
+# ignore Task 
 
-.\test_files
-
+/test_files
 /Task.pdf
+
