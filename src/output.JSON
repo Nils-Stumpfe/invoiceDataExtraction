@@ -1,0 +1,12 @@
+
+
+
+
+
+
+{
+    "rechnungs_nr" : "x" ,
+    "rechnungs_datum" : "x" ,
+    "gesamt_betrag_brutto" : "x" ,
+    "gesamt_betrag_netto" : "x" 
+}
