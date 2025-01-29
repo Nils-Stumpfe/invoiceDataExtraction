@@ -60,6 +60,11 @@ https://nodejs.org/api/path.html
 4. PDF lesen
 https://www.youtube.com/watch?v=THauKA1p7po
 https://www.npmjs.com/package/pdf-parse
+https://www.npmjs.com/package/pdfreader
+https://wiki.selfhtml.org/wiki/JavaScript/Anweisung/Automatische_Semikolons
+https://www.w3schools.com/js/js_if_else.asp
+https://www.youtube.com/watch?v=p995SdRXw_E
+
 - npm module erleichtern dir extrem dein Leben
 - imprort statements können sowohl spezifisch, als auch generisch sein
   -> Wenn generisch, muss const name beigefügt werden.
