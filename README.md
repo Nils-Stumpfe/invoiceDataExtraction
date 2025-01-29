@@ -57,6 +57,8 @@ https://nodejs.org/api/path.html
 - Wir können Variablen über CMDline nutzen
 
 
+4. PDF lesen
+
 
 
 4. Andere Beispiele
