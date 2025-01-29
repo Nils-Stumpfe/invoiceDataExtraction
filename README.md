@@ -23,6 +23,7 @@ This is a Tool to extract invoce data from a pdf file.
 }
 
 
+
 - Wie funktioniert Nodejs (Programm/Script)
 
 - Hilfsmittel
@@ -71,7 +72,12 @@ https://www.youtube.com/watch?v=p995SdRXw_E
 - der Javascript Parser fügt automatisch ; nach einem befehl ein.
 
 
+6. Wie funktioniert Javascript lol
+- mit functions, damit alles übersichtlicher ist.
+
+
 5. Daten finden
+https://www.youtube.com/watch?v=JirLkboYAEo
 
 
 6. Daten in JSON parsen
