@@ -58,6 +58,9 @@ https://nodejs.org/api/path.html
 
 
 4. PDF lesen
+https://www.youtube.com/watch?v=THauKA1p7po
+https://www.npmjs.com/package/pdf-parse
+
 
 
 
