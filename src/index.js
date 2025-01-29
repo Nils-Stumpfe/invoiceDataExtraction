@@ -22,12 +22,12 @@ if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
 
     try {
         // Dateiinhalt lesen
-        const txt = readFileSync(filePath, "utf-8"); 
+        const txt = fs.readFileSync(filePath, "utf-8"); 
 
         console.log(txt);
 
     } catch (error) {
-        console.error("Fehler beim Lesen der Datei:", error.message);
+        console.error("Fehler beim Lesen der .txt Datei:", error.message);
     }
 
 }  else if (path.extname(filePath) == ".pdf") { //ist eine .pdf Datei
@@ -37,15 +37,15 @@ if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
         const pdf = fs.readFileSync(filePath);
     
         pdfparse(pdf).then(function (data) {
-            console.log(data.text)
+            console.log(data.text);
         })
     
     
     } catch (error) {
-        console.error("Fehler beim Lesen der Datei:", error.message);
+        console.error("Fehler beim Lesen der .pdf Datei:", error.message);
     }
         
 
 } else {
-    console.error("Datei muss im .txt oder .pdf Format sein")
+    console.error("Datei muss im .txt oder .pdf Format sein");
 }
