@@ -46,6 +46,19 @@ https://www.youtube.com/watch?v=ENrzD9HAZK4&t=1s
 - Callbacks
 - Promisses
 
+
+3. Dateipfad über CMDLine
+https://www.youtube.com/watch?v=p995SdRXw_E
+https://nodejs.org/api/path.html
+
+- __filename und __dirname sind die sinzigen var mit double underscore.
+- Paths werden über Windows und POSIX Systeme anders gehandhabt.
+- Template Literals (Backticks (``)) beim einfügen komplexer Ausdrücke benutzen. nicht in Anführungszeichen ("").
+- Wir können Variablen über CMDline nutzen
+
+
+
+
 4. Andere Beispiele
 - zusätzliche args für Cmdline
     - ausgewählte Datei nuten
