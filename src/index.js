@@ -1,11 +1,24 @@
-const { readFile, readFileSync } = require ("fs");
-const txt = readFileSync("./test_files/Rechnung_Level_0.txt", "utf8");
+const { readFileSync, existsSync } = require("fs");
 
-if (process.argv.length === 2) {
-    console.error('Expected PATH_TO_PDF as an argument!');
+// Argument aus der Kommandozeile holen
+const filePath = process.argv[2];
+
+if (!filePath) {
+    console.error("Fehler: Bitte gib einen Dateipfad an.");
+    console.error("Benutzung: node src/index.js <DATEIPFAD>");
     process.exit(1);
-  }
+}
 
+// Prüfen, ob die Datei existiert
+if (!existsSync(filePath)) {
+    console.error(`Fehler: Die Datei "${filePath}" existiert nicht.`);
+    process.exit(1);
+}
 
-
- console.log(txt)
+try {
+    // Dateiinhalt lesen
+    const txt = readFileSync(filePath, "utf-8"); // "utf-8" sorgt für die richtige Codierung
+    console.log("Datei erfolgreich gelesen:\n", txt);
+} catch (error) {
+    console.error("Fehler beim Lesen der Datei:", error.message);
+}
