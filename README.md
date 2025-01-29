@@ -76,7 +76,18 @@ https://www.youtube.com/watch?v=p995SdRXw_E
 
 6. Daten in JSON parsen
 
+
 7. JSON zurückgeben
+
+8. Lvl 2
+
+8. Lvl 3
+
+8. Lvl 4
+
+8. Lvl 5
+
+
 
 
 Aufsetzten
