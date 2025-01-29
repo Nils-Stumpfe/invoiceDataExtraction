@@ -20,9 +20,17 @@ if (!fs.existsSync(filePath)) {
 // Prüfen, ob es sich um .txt oder .pdf handelt
 if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
 
-    console.log("ist txt")
+    try {
+        // Dateiinhalt lesen
+        const txt = readFileSync(filePath, "utf-8"); 
 
-} else { //ist eine .pdf Datei
+        console.log(txt);
+
+    } catch (error) {
+        console.error("Fehler beim Lesen der Datei:", error.message);
+    }
+
+}  else if (path.extname(filePath) == ".pdf") { //ist eine .pdf Datei
 
     try {
         // Dateiinhalt lesen
@@ -33,12 +41,11 @@ if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
         })
     
     
-    
-        //console.log("Datei erfolgreich gelesen:\n", pdf);
     } catch (error) {
         console.error("Fehler beim Lesen der Datei:", error.message);
     }
         
 
+} else {
+    console.error("Datei muss im .txt oder .pdf Format sein")
 }
-
