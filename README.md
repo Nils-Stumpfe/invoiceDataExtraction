@@ -38,8 +38,30 @@ https://www.youtube.com/watch?v=LERhbq-0S7Y
 - Objekt
 - formatter?
 
+
 2. NodeJS
-3. Aufsetzten
+https://www.youtube.com/watch?v=q-xS25lsN3I
+https://www.youtube.com/watch?v=ENrzD9HAZK4&t=1s
+
+- Callbacks
+- Promisses
+
 4. Andere Beispiele
-5. fileloader
-6. extrahiert
+- zusätzliche args für Cmdline
+    - ausgewählte Datei nuten
+
+
+
+- pdf lesen 
+
+- Daten parsen
+
+
+
+- Daten in JSON speichern
+
+- JSON zurückgeben
+
+
+Aufsetzten
+https://www.youtube.com/watch?v=gAkwW2tuIqE 
