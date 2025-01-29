@@ -60,25 +60,18 @@ https://nodejs.org/api/path.html
 4. PDF lesen
 https://www.youtube.com/watch?v=THauKA1p7po
 https://www.npmjs.com/package/pdf-parse
+- npm module erleichtern dir extrem dein Leben
+- imprort statements können sowohl spezifisch, als auch generisch sein
+  -> Wenn generisch, muss const name beigefügt werden.
+- der Javascript Parser fügt automatisch ; nach einem befehl ein.
 
 
+5. Daten finden
 
 
-4. Andere Beispiele
-- zusätzliche args für Cmdline
-    - ausgewählte Datei nuten
+6. Daten in JSON parsen
 
-
-
-- pdf lesen 
-
-- Daten parsen
-
-
-
-- Daten in JSON speichern
-
-- JSON zurückgeben
+7. JSON zurückgeben
 
 
 Aufsetzten
