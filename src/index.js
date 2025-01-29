@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("node:path");
-const pdfparse = require("pdf-parse");
+import fs from "fs";
+import path from "node:path";
+import pdfparse from "pdf-parse";
 
 // Argument aus der Kommandozeile holen
 const filePath = process.argv[2];
@@ -17,14 +17,14 @@ if (!fs.existsSync(filePath)) {
     process.exit(1);
 }
 
+let txt = undefined;
+
 // Prüfen, ob es sich um .txt oder .pdf handelt
 if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
 
-    try {
-        // Dateiinhalt lesen
-        const txt = fs.readFileSync(filePath, "utf-8"); 
+    try { // Dateiinhalt lesen
 
-        console.log(txt);
+        txt = fs.readFileSync(filePath, "utf-8"); 
 
     } catch (error) {
         console.error("Fehler beim Lesen der .txt Datei:", error.message);
@@ -32,14 +32,11 @@ if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
 
 }  else if (path.extname(filePath) == ".pdf") { //ist eine .pdf Datei
 
-    try {
-        // Dateiinhalt lesen
-        const pdf = fs.readFileSync(filePath);
+    try {// Dateiinhalt lesen
+        let pdf = fs.readFileSync(filePath);
     
-        pdfparse(pdf).then(function (data) {
-            console.log(data.text);
-        })
-    
+        let data = await pdfparse(pdf); // Warten, bis das PDF verarbeitet wurde
+        txt = data.text; 
     
     } catch (error) {
         console.error("Fehler beim Lesen der .pdf Datei:", error.message);
@@ -49,3 +46,4 @@ if (path.extname(filePath) == ".txt") { //ist eine .txt Datei
 } else {
     console.error("Datei muss im .txt oder .pdf Format sein");
 }
+
