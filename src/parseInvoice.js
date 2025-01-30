@@ -160,7 +160,6 @@ function parseAmounts(text) {
     "subtotal",
     "nettosumme",
 
-    "netto",
     "net amount",
     "net total",
     "summe netto"
@@ -172,7 +171,6 @@ function parseAmounts(text) {
     "bruttobetrag",
     "gesamtbetrag",
     "total",
-    "gesamt",
 
     "brutto",
     "gross amount",
@@ -183,6 +181,7 @@ function parseAmounts(text) {
 
   // Labels, die uns verraten, dass es sich um einen Gesamtbetrag ohne Netto/Brutto-Kennzeichnung handelt
   const totalKeywords = [
+    "Betrag",
     "amount due",
     "summe",
     // ...
