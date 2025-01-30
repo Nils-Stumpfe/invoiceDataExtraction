@@ -1,3 +1,12 @@
+/**
+ * Diese File wurde größtenteils von CHatGPT generiert.
+ * Das tatsächliche extrahieren der Daten sehr kompliziert.
+ * Da ich kein passendes Modul gefunden habe um mir die Arbeit abzunehmen 
+ * und ich die Logik nicht selbst coden kann, habe ich mithilfe von GPT zumindest ein Grundgerüst gebaut.
+ */
+
+
+
 const moment = require("moment");
 const chrono = require("chrono-node");
 
@@ -226,14 +235,14 @@ function parseAmounts(text) {
   }
   // Filter nur auf anerkannte Währungen
   // (Wir hatten mal "unbekannte Währung => undefined" in den Requirements,
-  //  aber du sagtest, wir "loggen unknown" und dann totalAmountNet = totalAmountGross = undefined.)
+  //  aber du sagtest, wir "loggen unknown" und dann gesamt_betrag_brutto = gesamt_betrag_netto = undefined.)
   const knownSymbols = ["€", "$", "£", "¥"];
   const unknown = [...recognizedCurrencies].filter(s => !knownSymbols.includes(s));
 
   if (unknown.length > 0) {
     console.log("WARNUNG: Unbekannte Währung(en) gefunden:", unknown);
     // => Dann sind alle Beträge undefined
-    return { totalAmountNet: undefined, totalAmountGross: undefined };
+    return { gesamt_betrag_brutto: undefined, gesamt_betrag_netto: undefined };
   }
 
   if (recognizedCurrencies.size > 1) {
@@ -294,8 +303,8 @@ function parseAmounts(text) {
 
   // 4) Nach Vorgabe:
   //    - Falls wir sowohl Netto- als auch Brutto-Werte finden:
-  //         totalAmountNet = größter Netto
-  //         totalAmountGross = größter Brutto
+  //         gesamt_betrag_brutto = größter Netto
+  //         gesamt_betrag_netto = größter Brutto
   //    - Falls wir KEINE expliziten Netto/Brutto-Werte, aber "total" => 
   //         => totalNet = totalGross = größter total
   //    - Falls wir gar nix passendes finden => "Kein Netto/Brutto-Hinweis"
@@ -303,73 +312,73 @@ function parseAmounts(text) {
   //
   //    => Falls es NUR 1 Summe ohne Kennzeichnung -> net=brutto=die Summe
 
-  let totalAmountNet = undefined;
-  let totalAmountGross = undefined;
+  let gesamt_betrag_brutto = undefined;
+  let gesamt_betrag_netto = undefined;
 
   if (netMatches.length > 0) {
-    totalAmountNet = Math.max(...netMatches).toFixed(2);
+    gesamt_betrag_brutto = Math.max(...netMatches).toFixed(2);
   }
   if (grossMatches.length > 0) {
-    totalAmountGross = Math.max(...grossMatches).toFixed(2);
+    gesamt_betrag_netto = Math.max(...grossMatches).toFixed(2);
   }
 
-  if (totalAmountNet !== undefined && totalAmountGross !== undefined) {
+  if (gesamt_betrag_brutto !== undefined && gesamt_betrag_netto !== undefined) {
     // beide gefunden => das war's
     return { 
-      totalAmountNet, 
-      totalAmountGross 
+      gesamt_betrag_brutto, 
+      gesamt_betrag_netto 
     };
   }
 
   // Falls wir NUR netMatches haben, aber KEIN Brutto
   // => du sagst, wir sollen NICHTS erzwingen. Evtl. existiert ein totalMatches?
-  if (totalAmountNet !== undefined && !totalAmountGross) {
+  if (gesamt_betrag_brutto !== undefined && !gesamt_betrag_netto) {
     // Schau, ob wir "total" als fallback nehmen
     if (totalMatches.length > 0) {
-      totalAmountGross = Math.max(...totalMatches).toFixed(2);
-      return { totalAmountNet, totalAmountGross };
+      gesamt_betrag_netto = Math.max(...totalMatches).toFixed(2);
+      return { gesamt_betrag_brutto, gesamt_betrag_netto };
     } else {
       // Dann haben wir eben NUR net
       // => Der Requirement: "Hat der Text nicht beide keywords, sondern nur einen Betrag -> weise diesen betrag sowohl netto als brutto zu"
       console.log("WARNUNG: Kein Brutto-Wert gefunden; übernehme Netto in beide Felder.");
-      totalAmountGross = totalAmountNet;
+      gesamt_betrag_netto = gesamt_betrag_brutto;
       return { 
-        totalAmountNet, 
-        totalAmountGross 
+        gesamt_betrag_brutto, 
+        gesamt_betrag_netto 
       };
     }
   }
 
   // Falls wir NUR grossMatches haben
-  if (!totalAmountNet && totalAmountGross !== undefined) {
+  if (!gesamt_betrag_brutto && gesamt_betrag_netto !== undefined) {
     if (totalMatches.length > 0) {
-      totalAmountNet = Math.max(...totalMatches).toFixed(2);
-      return { totalAmountNet, totalAmountGross };
+      gesamt_betrag_brutto = Math.max(...totalMatches).toFixed(2);
+      return { gesamt_betrag_brutto, gesamt_betrag_netto };
     } else {
       console.log("WARNUNG: Kein Netto-Wert gefunden; übernehme Brutto in beide Felder.");
-      totalAmountNet = totalAmountGross;
+      gesamt_betrag_brutto = gesamt_betrag_netto;
       return { 
-        totalAmountNet, 
-        totalAmountGross 
+        gesamt_betrag_brutto, 
+        gesamt_betrag_netto 
       };
     }
   }
 
   // Falls BEIDE leer, aber wir haben totalMatches?
-  if (!totalAmountNet && !totalAmountGross && totalMatches.length > 0) {
+  if (!gesamt_betrag_brutto && !gesamt_betrag_netto && totalMatches.length > 0) {
     const val = Math.max(...totalMatches).toFixed(2);
     console.log("WARNUNG: Kein Netto/Brutto-Hinweis gefunden. Setze totalNet=totalGross=", val);
     return {
-      totalAmountNet: val,
-      totalAmountGross: val
+      gesamt_betrag_brutto: val,
+      gesamt_betrag_netto: val
     };
   }
 
   // Nix gefunden
   console.log("WARNUNG: Keine passenden Beträge (Netto/Brutto/Total) gefunden.");
   return {
-    totalAmountNet: undefined,
-    totalAmountGross: undefined
+    gesamt_betrag_brutto: undefined,
+    gesamt_betrag_netto: undefined
   };
 }
 
@@ -398,15 +407,15 @@ function truncateToTwoDecimals(value) {
 async function parseInvoice(text) {
 
   const cleanedText = preprocessText(text);
-  const invoiceDate = parseInvoiceDate(cleanedText);
-  const invoiceNumber = parseInvoiceNumber(cleanedText);
-  const { totalAmountNet, totalAmountGross } = parseAmounts(cleanedText);
+  const rechnungs_datum = parseInvoiceDate(cleanedText);
+  const rechnungs_nr = parseInvoiceNumber(cleanedText);
+  const { gesamt_betrag_brutto, gesamt_betrag_netto } = parseAmounts(cleanedText);
 
   return {
-    invoiceNumber,
-    invoiceDate,          
-    totalAmountNet,       
-    totalAmountGross,   
+    rechnungs_nr,
+    rechnungs_datum,          
+    gesamt_betrag_brutto,       
+    gesamt_betrag_netto,   
   };
 }
 
