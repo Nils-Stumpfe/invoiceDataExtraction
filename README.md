@@ -81,23 +81,21 @@ https://javascript.info/json
 - Alle Objekte sind JSON
 
 
-8. Daten finden
+8. Daten finden & how to prompt engineering
 https://www.youtube.com/watch?v=JirLkboYAEo
 https://github.com/andydunkel/translate.js
 
 
 
-
-8. Lvl 2
-
-8. Lvl 3
-
-8. Lvl 4
-
-8. Lvl 5
+9. Clean Code
+https://regexr.com
+- einrücken mit tab oder schift+tab
 
 
+10. Lvl 2
 
+11. Lvl 3
 
-Aufsetzten
-https://www.youtube.com/watch?v=gAkwW2tuIqE 
+12. Lvl 4
+
+13. Lvl 5
