@@ -83,6 +83,8 @@ https://javascript.info/json
 
 8. Daten finden
 https://www.youtube.com/watch?v=JirLkboYAEo
+https://github.com/andydunkel/translate.js
+
 
 
 

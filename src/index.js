@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("node:path");
 const pdfparse = require("pdf-parse");
+const { parseInvoice } = require("./parseInvoice");
 
 // Argument aus der Kommandozeile holen
 const filePath = process.argv[2];
@@ -12,33 +13,24 @@ main();
 async function main() {
     await checkFile(); // existiert die Datei?
     const txt = await parseContent(filePath); // extrahiere den Text
-    const data = await searchForInfo(txt); // suche nach den wichtigen Infos
-    const returnJson = await toJson(data); // konvertiere Infos in JSON-Format
-    console.log(returnJson); // zeige JSON auf der Konsole an
+    const data = await extractTextData(txt); // suche nach den wichtigen Infos
+
+
+    console.log("------------------------------------------------------ \n JSON : \n ------------------------------------------------------");
+
+
+    console.log(data);// zeige JSON auf der Konsole an
 }
 
-async function toJson(infos) {
+async function extractTextData(text) {
+  try {
+    const result = await parseInvoice(text);
+    return result;
 
-    let data = {
-        rechnungs_nr: infos[0],
-        rechnungs_datum: infos[1],
-        gesamt_betrag_brutto: infos[2],
-        gesamt_betrag_netto: infos[3]
-      }
-
-      return data;
-}
-
-
-
-
-async function searchForInfo(text) {
-    let rechnungs_Nummer = "hi";
-    let rechnungs_Datum = "12.12.12";
-    let betrag_Brutto = 100;
-    let betrag_Netto = 80;
-    return [rechnungs_Nummer, rechnungs_Datum, betrag_Brutto, betrag_Netto];
-}
+  } catch (err) {
+    console.error("Fehler:", err);
+  }
+};
 
 
 async function checkFile() {
