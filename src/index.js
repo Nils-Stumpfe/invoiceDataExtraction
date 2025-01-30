@@ -10,11 +10,29 @@ main();
 
 
 async function main() {
-    await checkFile();
-    const txt = await parseContent(filePath);
+    //await checkFile();
+    //const txt = await parseContent(filePath);
     //console.log(txt);
-    searchForInfo(txt);
+    //searchForInfo(txt);
+
+    const returnJson = toJson("hi", "12.12.12", 100, 80);
+    console.log(returnJson);
 }
+
+async function toJson(rnNummer, rnDatum, gBrutto, gNetto) {
+
+    let data = {
+        rechnungs_nr: rnNummer,
+        rechnungs_datum: rnDatum,
+        gesamt_betrag_brutto: gBrutto,
+        gesamt_betrag_netto: gNetto
+      }
+
+      let json = JSON.stringify(data);
+      return json;
+}
+
+
 
 
 async function searchForInfo(text) {
@@ -22,9 +40,6 @@ async function searchForInfo(text) {
     let rechnungs_Datum = undefined;
     let betrag_Brutto = undefined;
     let betrag_Netto = undefined;
-
-    
-
 }
 
 

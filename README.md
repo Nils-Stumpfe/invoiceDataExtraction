@@ -81,6 +81,8 @@ https://www.youtube.com/watch?v=JirLkboYAEo
 
 
 6. Daten in JSON parsen
+https://javascript.info/json
+
 
 
 7. JSON zurückgeben
