@@ -1,4 +1,5 @@
 const moment = require("moment");
+const chrono = require("chrono-node");
 
 /**
  * Entfernt überflüssige Zeilenumbrüche, Tabs etc..
@@ -9,7 +10,6 @@ function preprocessText(rawText) {
       .replace(/\s\s+/g, " ")      // Mehrfache Whitespaces reduzieren
       .trim();
 }
-  
   
 /**
  * Aus einem beliebigen String ein Datum nach dem Muster "DD.MM.YYYY" parsen.
@@ -22,54 +22,60 @@ function preprocessText(rawText) {
  * Hier: wir nehmen das erste gefundene.
  */
 function parseInvoiceDate(text) {
-  // Verschiedene mögliche Labels (Deutsch / Englisch) für das Rechnungsdatum
-  const dateLabels = [
-    "rechnungsdatum",
-    "rechnungs-/lieferdatum",
-    "date of issue",
-    "invoice date",
-    "datum:",
-    "rechnung datum"
-    // hier weitere ergänzen ...
-  ];
-
-  /**  Regex zum Erkennen von Datumsformaten.
-   * funktioniert für folgende Formate in sowohl englisch, als auch deutsch:
-   * 16.02.2024
-   * November 8, 2023
-   * 8/23/2023
-   * 21. August 2023
+  const monthTranslations = {
+    "januar": "January",
+    "februar": "February",
+    "märz": "March",
+    "april": "April",
+    "mai": "May",
+    "juni": "June",
+    "juli": "July",
+    "august": "August",
+    "september": "September",
+    "oktober": "October",
+    "november": "November",
+    "dezember": "December"
+  };
+  
+  /**
+   * Ersetzt deutsche Monatsnamen durch englische für `chrono-node`
    */
-  const dateRegex = new RegExp(
-    "\\b(?:(\\d{1,2})[.\\-/](\\d{1,2}|\\w+)([.\\-/]|\\s)(\\d{4})|(\\w+)\\s(\\d{1,2}),?\\s(\\d{4}))\\b",
-    "i"
-  );
-
-  let invoiceDate;
-
-  for (const label of dateLabels) {
-    // Beispiel: "rechnungsdatum\s*\:?\s*(REGEX FÜR DATUM)"
-    const pattern = new RegExp(
-      label + "\\s*:?\\s*" + dateRegex.source, 
-      "i"
-    );
-
-    const match = pattern.exec(text);
-    if (match) {
-      // match[0] = voller Treffer (Label + Datum)
-      // wir müssen uns das tatsächliche Datum aus dem match extrahieren
-      // Da unser Regex recht komplex ist, extrahieren wir das Teil,
-      // das dem Datum entspricht (z.B. match[1] + match[4]).
-      // Hier vereinfachen wir und nehmen den Teil ab match[1]:
-      const rawDate = match[0].replace(new RegExp(label, "i"), "").trim();
-      invoiceDate = normalizeDate(rawDate);
-      break;
-    }
+  function replaceGermanMonths(text) {
+    return text.replace(/\b(januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember)\b/gi, match => {
+      return monthTranslations[match.toLowerCase()] || match;
+    });
   }
-
-  return invoiceDate;
+  
+  const dateLabels = [
+      "rechnungsdatum",
+      "rechnungs-/lieferdatum",
+      "date of issue",
+      "invoice date",
+      "datum:",
+      "rechnung datum"
+    ];
+  
+    for (const label of dateLabels) {
+      // Erzeuge ein Regex, das nach "Label: <Datum>" sucht
+      const pattern = new RegExp(label + "\\s*:?\\s*(.+)", "i"); // Nimmt alles nach dem Label
+      const match = pattern.exec(text);
+      if (match) {
+        let rawDate = match[1].trim();
+        rawDate = replaceGermanMonths(rawDate); // Deutsche Monate ersetzen
+  
+        const parsedDate = chrono.parseDate(rawDate); // Nutzt NLP für Datumsanalyse
+        if (parsedDate) return moment(parsedDate).format("DD.MM.YYYY"); // In unser Format umwandeln
+      }
+    }
+  
+    return undefined;
 }
 
+/**
+ * Nimmt ein rohes Datumsfragment (z.B. "16 Feb 2024", "2024-02-16") und
+ * versucht, es in "DD.MM.YYYY" umzuwandeln.
+ * npm Moment.js wird hier benutzt.
+ */
 function normalizeDate(rawDateStr) {
   const DATE_FORMATS = [
     "DD.MM.YYYY",     // 16.02.2024, 29.07.2024
@@ -95,102 +101,6 @@ function normalizeDate(rawDateStr) {
 }
 
 /**
- * Nimmt ein rohes Datumsfragment (z.B. "16 Feb 2024", "2024-02-16") und
- * versucht, es in "DD.MM.YYYY" umzuwandeln.
- * 
- * -> Du kannst hier z.B. Moment.js / dayjs / date-fns einsetzen, 
- *    aber wir machen es manuell (rudimentär).
- */
-function normalizeDate2(rawDateStr) {
-  // Ganz grob: check, ob's z.B. "16 Feb 2024", "16.02.2024", ...
-  // Dies ist eine sehr einfache Heuristik und reicht
-  // für viele Standardfälle aus.
-
-  // 1) Monat als Zahl vs. Monat als Wort?
-  // 2) Tag/Monat verwechselbar?
-
-  // Du sagtest: "Wenn unklar, nimm dd.mm.yyyy an, falls Tag <= 12"
-  // Hier vereinfachen wir sehr.
-
-  // Hier ein Beispiel für simplen Regex:
-  const dotSlashDash = rawDateStr.replace(/[,\s]+/g, " ");
-
-  // Evtl. vorkommende Monatsnamen in Englisch/Deutsch
-  const months = {
-    jan: "01",
-    january: "01",
-    januar: "01",
-    feb: "02",
-    february: "02",
-    februar: "02",
-    mar: "03",
-    märz: "03",
-    march: "03",
-    apr: "04",
-    april: "04",
-    may: "05",
-    mai: "05",
-    jun: "06",
-    june: "06",
-    jul: "07",
-    july: "07",
-    aug: "08",
-    august: "08",
-    sep: "09",
-    sept: "09",
-    september: "09",
-    oct: "10",
-    oktober: "10",
-    nov: "11",
-    november: "11",
-    dec: "12",
-    dezember: "12",
-    dez: "12"
-  };
-
-  // Grober Regex, der z.B. "16 Feb 2024" in 3 Gruppen trennt
-  const pattern = /(\d{1,2})\.?(\d{1,2}|[A-Za-z]+)\.?(\d{2,4})/i;
-  let m = pattern.exec(dotSlashDash);
-  if (m) {
-    let [ , dd, mm, yyyy ] = m;
-    
-    // Monats-String in Zahl wandeln, falls nötig
-    if (isNaN(mm)) {
-      // z.B. "Feb" -> "02"
-      const mmLower = mm.toLowerCase();
-      if (months[mmLower]) {
-        mm = months[mmLower];
-      } else {
-        // unbekannter Monatsname
-        mm = "01"; // fallback
-      }
-    }
-    // 2-stelliges Jahr in 4-stelliges umwandeln, hier rudimentär
-    if (yyyy.length === 2) {
-      yyyy = "20" + yyyy;
-    }
-    // 0-padding
-    dd = dd.padStart(2, "0");
-    mm = mm.toString().padStart(2, "0");
-    return `${dd}.${mm}.${yyyy}`;
-  }
-
-  // Versuch: "YYYY-MM-DD" oder "YYYY/MM/DD"
-  const isoPat = /(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/;
-  m = isoPat.exec(dotSlashDash);
-  if (m) {
-    let [ , y, mo, d ] = m;
-    d = d.padStart(2, "0");
-    mo = mo.padStart(2, "0");
-    return `${d}.${mo}.${y}`;
-  }
-
-  // Konnte nichts parsen? -> Gib den originalen String zur Not zurück
-  return rawDateStr.trim();
-}
-
-
-/**
  * Extrahiert die Rechnungsnummer aus dem Text.
  * Regeln:
  *  - Stichwörter: "Rechnungsnummer", "Rechnung Nr", "invoice number", ...
@@ -199,13 +109,16 @@ function normalizeDate2(rawDateStr) {
  *  - Falls dieselbe Nr. doppelt -> nutze sie
  */
 function parseInvoiceNumber(text) {
+
   // Mögliche Labels:
   const invoiceNumberLabels = [
     "rechnungsnummer",
+    "rechnungsnr",
     "rechnung nr\\.?\\s*",
     "invoice number",
+    "invoice",
     "invoice no\\.?\\s*"
-    // ggf. mehr
+    // Weitere einfügen...
   ];
 
   // Regex, das "Label + (beliebige Zeichen bis Zeilenende / Stop)" abgreift
@@ -220,10 +133,11 @@ function parseInvoiceNumber(text) {
   for (const label of invoiceNumberLabels) {
     // Bei "RechnungO12341875" kann man z.B. so vorgehen:
     //  - Suche z.B. "Rechnungsnummer\s*[:\-]*\s*([\S]+)"
+
     const pattern = new RegExp(
       label + "\\s*[:\\-]*\\s*([^\\s]+)", 
-      "gi" // global, case-insensitive
-    );
+      "gi");
+
     let match;
     while ((match = pattern.exec(text)) !== null) {
       // match[1] wäre der Teil nach dem label
@@ -256,68 +170,49 @@ function parseInvoiceNumber(text) {
 
 /**
  * Sucht im Text nach Währungs-Beträgen, die mit (netto) oder (brutto) bzw. "net"/"gross" usw. markiert sind.
- * 
- * Wichtigste Punkte:
- *  - Verschiedene Labels für Netto/Brutto: (netto), (brutto), net amount, gross amount, "Nettobetrag", ...
- *  - Falls wir mehrere Netto-Beträge finden -> nimm den größten
- *  - Dasselbe für Brutto
- *  - Falls wir KEINE Unterscheidung finden, aber "total" / "amount due" etc., 
- *    => dann => totalAmountNet = totalAmountGross = gefundener Wert
- *  - Falls wir Währungen mischen, priorisieren wir Euro. 
- *  - Falls wir Währungs-Labels finden, die wir NICHT kennen, => log "unbekannte Währung"
- *    => und setze Netto/Brutto = undefined.
- *  - Falls wir Währungszeichen "€" + "$" im selben Text sehen => 
- *    - wir loggen, dass mehrere Währungen gefunden wurden
- *    - wenn es Beträge in Euro gibt, verwenden wir die 
- *    - falls gar kein Euro, nehmen wir die erste gefundene
- *
- * Hier implementieren wir nur die "Gesamtbeträge", da du gesagt hast:
- *   "Suche bloß nach dem Gesamt-Betrag" / "Nimm den größten, falls mehrere"
  */
 function parseAmounts(text) {
+
   // Alle möglichen (sehr allgemeinen) Labels, die andeuten, dass es um Netto-Beträge geht
   const netKeywords = [
-    "netto",
     "nettobetrag",
+    "gesmatbetrag netto",
+    "warenwert netto",
+    "subtotal",
+    "nettosumme",
+
+    "netto",
     "net amount",
     "net total",
-    "warenwert netto",
+    "total",
     "summe netto"
     // ...
   ];
+
   // Alle möglichen (sehr allgemeinen) Labels, die andeuten, dass es um Brutto-Beträge geht
   const grossKeywords = [
-    "brutto",
     "bruttobetrag",
+    "gesamtbetrag",
+    "total",
+    "gesamt",
+
+    "brutto",
     "gross amount",
     "gross total",
     "summe brutto"
     // ...
   ];
+
   // Labels, die uns verraten, dass es sich um einen Gesamtbetrag ohne Netto/Brutto-Kennzeichnung handelt
   const totalKeywords = [
-    "gesamtbetrag",
-    "total",
     "amount due",
     "summe",
-    "gesamt"
     // ...
   ];
 
   // 1) Alle Beträge + Währung aus dem Text fischen.
-  //    Mögliche Formate:
-  //      - €875,-   => interpretieren als 875.00
-  //      - $2750.00 => interpretieren als 2750.00
-  //      - 102,44 € => interpretieren als 102.44 (Euro)
-  // Regex z.B.: Währungssymbol optional vorn/hinten, Zahlen, Komma/Punkt, evtl. ,- ...
-  //   Achtung, wir können es verschachteln. 
   const moneyPattern = new RegExp(
-    // Gruppe 1: Währungssymbol (€, $, £, ¥) optional
-    // Gruppe 2: Zahlen (inkl. Komma/Punkt)
-    // Gruppe 3: optional ,- 
-    // Gruppe 4: Währungssymbol evtl. am Ende
-    "([€$¥£])?\\s?([0-9]+(?:[\\.,][0-9]+)?)(?:,-)?\\s?([€$¥£])?",
-    "gi"
+    "([€$¥£])?\\s?([0-9]+(?:[\\.,][0-9]+)?)(?:,-)?\\s?([€$¥£])?", "gi"
   );
 
   let match;
