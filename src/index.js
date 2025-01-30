@@ -15,6 +15,7 @@ async function main() {
     const txt = await parseContent(filePath); // extrahiere den Text
     const data = await extractTextData(txt); // suche nach den wichtigen Infos
 
+    console.log(txt)
 
     console.log("------------------------------------------------------ \n JSON : \n ------------------------------------------------------");
 

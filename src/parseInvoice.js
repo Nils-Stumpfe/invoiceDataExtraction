@@ -72,35 +72,6 @@ function parseInvoiceDate(text) {
 }
 
 /**
- * Nimmt ein rohes Datumsfragment (z.B. "16 Feb 2024", "2024-02-16") und
- * versucht, es in "DD.MM.YYYY" umzuwandeln.
- * npm Moment.js wird hier benutzt.
- */
-function normalizeDate(rawDateStr) {
-  const DATE_FORMATS = [
-    "DD.MM.YYYY",     // 16.02.2024, 29.07.2024
-    "MMMM D, YYYY",   // November 8, 2023, Dezember 8, 2023
-    "D. MMMM YYYY",    // 21.August 2023
-    "D.MMMM YYYY",    // 21. August 2023
-    "MMM D, YYYY",    // Jan 8, 2023, January 10, 2023
-    "M/D/YYYY",       // 8/23/2023
-    "YYYY-MM-DD"      // 2024-02-16
-  ];
-
-
-  // **Versuch 1:** Moment.js mit deutscher Locale
-  let parsedDate = moment(rawDateStr, DATE_FORMATS, "de", true);
-  
-  // Falls ungültig, probiere **englische Locale**
-  if (!parsedDate.isValid()) {
-    parsedDate = moment(rawDateStr, DATE_FORMATS, "en", true);
-  }
-
-  // Falls ein gültiges Datum gefunden wurde, formatiere es
-  return parsedDate.isValid() ? parsedDate.format("DD.MM.YYYY") : undefined;
-}
-
-/**
  * Extrahiert die Rechnungsnummer aus dem Text.
  * Regeln:
  *  - Stichwörter: "Rechnungsnummer", "Rechnung Nr", "invoice number", ...
@@ -167,7 +138,6 @@ function parseInvoiceNumber(text) {
   return [...foundNumbers][0];
 }
 
-
 /**
  * Sucht im Text nach Währungs-Beträgen, die mit (netto) oder (brutto) bzw. "net"/"gross" usw. markiert sind.
  */
@@ -184,7 +154,6 @@ function parseAmounts(text) {
     "netto",
     "net amount",
     "net total",
-    "total",
     "summe netto"
     // ...
   ];
@@ -404,7 +373,6 @@ function parseAmounts(text) {
   };
 }
 
-
 /**
  * Hilfsfunktion zum Abkappen auf 2 Nachkommastellen ohne mathematisches Runden.
  * Bsp: 123.4567 => "123.45"
@@ -423,44 +391,23 @@ function truncateToTwoDecimals(value) {
   return intPart + "." + decPart.padEnd(2, "0");
 }
 
-
-// ============================================================
-// 2) Hauptfunktion parseInvoice(text)
-// ============================================================
-
 /**
  * Asynchrone Hauptfunktion, die die Daten aus dem Text extrahiert
  * und ein Objekt zurückgibt.
  */
 async function parseInvoice(text) {
-  // 1) Vorverarbeitung
+
   const cleanedText = preprocessText(text);
-
-  // 2) Rechnungsdatum bestimmen
   const invoiceDate = parseInvoiceDate(cleanedText);
-
-  // 3) Rechnungsnummer
   const invoiceNumber = parseInvoiceNumber(cleanedText);
-
-  // 4) Netto/Brutto-Beträge
   const { totalAmountNet, totalAmountGross } = parseAmounts(cleanedText);
 
-  
-  // 5) Ergebnis-Objekt konstruieren
   return {
     invoiceNumber,
-    invoiceDate,          // z.B. "16.02.2024"
-    totalAmountNet,       // z.B. "4865.00"
-    totalAmountGross,     // z.B. "4165.00"
+    invoiceDate,          
+    totalAmountNet,       
+    totalAmountGross,   
   };
 }
 
-// ============================================================
-// 3) Export der Hauptfunktion
-// ============================================================
-
-// Falls du Node.js CommonJS verwendest:
 module.exports = { parseInvoice };
-
-// Falls du ESM nutzen willst, dann stattdessen:
-// export { parseInvoice };
