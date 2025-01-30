@@ -10,36 +10,34 @@ main();
 
 
 async function main() {
-    //await checkFile();
-    //const txt = await parseContent(filePath);
-    //console.log(txt);
-    //searchForInfo(txt);
-
-    const returnJson = toJson("hi", "12.12.12", 100, 80);
-    console.log(returnJson);
+    await checkFile(); // existiert die Datei?
+    const txt = await parseContent(filePath); // extrahiere den Text
+    const data = await searchForInfo(txt); // suche nach den wichtigen Infos
+    const returnJson = await toJson(data); // konvertiere Infos in JSON-Format
+    console.log(returnJson); // zeige JSON auf der Konsole an
 }
 
-async function toJson(rnNummer, rnDatum, gBrutto, gNetto) {
+async function toJson(infos) {
 
     let data = {
-        rechnungs_nr: rnNummer,
-        rechnungs_datum: rnDatum,
-        gesamt_betrag_brutto: gBrutto,
-        gesamt_betrag_netto: gNetto
+        rechnungs_nr: infos[0],
+        rechnungs_datum: infos[1],
+        gesamt_betrag_brutto: infos[2],
+        gesamt_betrag_netto: infos[3]
       }
 
-      let json = JSON.stringify(data);
-      return json;
+      return data;
 }
 
 
 
 
 async function searchForInfo(text) {
-    let rechnungs_Nummer = undefined;
-    let rechnungs_Datum = undefined;
-    let betrag_Brutto = undefined;
-    let betrag_Netto = undefined;
+    let rechnungs_Nummer = "hi";
+    let rechnungs_Datum = "12.12.12";
+    let betrag_Brutto = 100;
+    let betrag_Netto = 80;
+    return [rechnungs_Nummer, rechnungs_Datum, betrag_Brutto, betrag_Netto];
 }
 
 

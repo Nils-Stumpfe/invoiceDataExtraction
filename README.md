@@ -76,16 +76,15 @@ https://www.youtube.com/watch?v=p995SdRXw_E
 - mit functions, damit alles übersichtlicher ist.
 
 
-5. Daten finden
+7. Daten in JSON parsen
+https://javascript.info/json
+- Alle Objekte sind JSON
+
+
+8. Daten finden
 https://www.youtube.com/watch?v=JirLkboYAEo
 
 
-6. Daten in JSON parsen
-https://javascript.info/json
-
-
-
-7. JSON zurückgeben
 
 8. Lvl 2
 
