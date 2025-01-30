@@ -1,3 +1,4 @@
+const moment = require("moment");
 
 /**
  * Entfernt überflüssige Zeilenumbrüche, Tabs etc..
@@ -32,25 +33,27 @@ function parseInvoiceDate(text) {
     // hier weitere ergänzen ...
   ];
 
-  // Regex zum Erkennen von Datumsformaten.
+  /**  Regex zum Erkennen von Datumsformaten.
+   * funktioniert für folgende Formate in sowohl englisch, als auch deutsch:
+   * 16.02.2024
+   * November 8, 2023
+   * 8/23/2023
+   * 21. August 2023
+   */
   const dateRegex = new RegExp(
-    // grobe Heuristik: 1-2 Stellen Tag, optional '.' oder '-' oder '/'
-    // 1-2 oder 3-4 Stellen Monat (Zahl oder Buchstaben),
-    // 2-4 Stellen Jahr
-    // Bsp: 16.02.2024, 16 Feb 2024, 2024-02-16, 21. August 2023 ...
     "\\b(?:(\\d{1,2})[.\\-/](\\d{1,2}|\\w+)([.\\-/]|\\s)(\\d{4})|(\\w+)\\s(\\d{1,2}),?\\s(\\d{4}))\\b",
     "i"
   );
 
-
-  // Für jeden möglichen Label nach einem Datum suchen
   let invoiceDate;
+
   for (const label of dateLabels) {
     // Beispiel: "rechnungsdatum\s*\:?\s*(REGEX FÜR DATUM)"
     const pattern = new RegExp(
       label + "\\s*:?\\s*" + dateRegex.source, 
       "i"
     );
+
     const match = pattern.exec(text);
     if (match) {
       // match[0] = voller Treffer (Label + Datum)
@@ -67,6 +70,29 @@ function parseInvoiceDate(text) {
   return invoiceDate;
 }
 
+function normalizeDate(rawDateStr) {
+  const DATE_FORMATS = [
+    "DD.MM.YYYY",     // 16.02.2024, 29.07.2024
+    "MMMM D, YYYY",   // November 8, 2023, Dezember 8, 2023
+    "D. MMMM YYYY",    // 21.August 2023
+    "D.MMMM YYYY",    // 21. August 2023
+    "MMM D, YYYY",    // Jan 8, 2023, January 10, 2023
+    "M/D/YYYY",       // 8/23/2023
+    "YYYY-MM-DD"      // 2024-02-16
+  ];
+
+
+  // **Versuch 1:** Moment.js mit deutscher Locale
+  let parsedDate = moment(rawDateStr, DATE_FORMATS, "de", true);
+  
+  // Falls ungültig, probiere **englische Locale**
+  if (!parsedDate.isValid()) {
+    parsedDate = moment(rawDateStr, DATE_FORMATS, "en", true);
+  }
+
+  // Falls ein gültiges Datum gefunden wurde, formatiere es
+  return parsedDate.isValid() ? parsedDate.format("DD.MM.YYYY") : undefined;
+}
 
 /**
  * Nimmt ein rohes Datumsfragment (z.B. "16 Feb 2024", "2024-02-16") und
@@ -75,7 +101,7 @@ function parseInvoiceDate(text) {
  * -> Du kannst hier z.B. Moment.js / dayjs / date-fns einsetzen, 
  *    aber wir machen es manuell (rudimentär).
  */
-function normalizeDate(rawDateStr) {
+function normalizeDate2(rawDateStr) {
   // Ganz grob: check, ob's z.B. "16 Feb 2024", "16.02.2024", ...
   // Dies ist eine sehr einfache Heuristik und reicht
   // für viele Standardfälle aus.
