@@ -1,101 +1,16 @@
 # invoiceDataExtraction
-This is a Tool to extract invoce data from a pdf file.
 
+**Beschreibung:**
+Hierbei handelt es sich um eine Aufgabe, welche ich während des Bewerbungsporzesses bei OMM solutions bearbeitet habe.
 
+**Ziel:**
+Ziel war es ein Skript zu schreiben, welches Rechnungsinformationen aus PDFs extrahiert und als JSON zurück gibt.
 
-# Aufgabe, wichtige Punkte:
-- Wie funktioniert JSON
-  - JSON objek:
-        ● rechnungs_nr
-        ● rechnungs_datum (TT.MM.JJJJ)
-        ● gesamt_betrag_brutto (Euro als Dezimal)
-        ● gesamt_betrag_netto (Euro als Dezimal)
+**Ergebniss:**
+Ich habe lediglich das 0 Level lösen können, da ich mich auf einen Lösungsweg eingelassen habe, welcher nicht generisch funktionieren kann.
+Zur eigentlichen Lösung hätte ich am besten eine KI API gebraucht, da die Daten und Formate zu unterschiedlich für einen REGEX-Ansatz waren.
+Das Ergebniss ist allerdings dennoch positiv, da ich mein persönliches Ziel javascript zu erkunden erreicht habe und dies der größere Fokus für mich / meine Karriere war und ist.
 
-
-
-- Was bedeutet folgende Strucktur?:
-
-{
-  "rechnungs_nr": "ABC123",
-  "rechnungs_datum": "01.01.1970",
-  "gesamt_betrag_brutto": 119.00,
-  "gesamt_betrag_netto": 100.00
-}
-
-
-
-- Wie funktioniert Nodejs (Programm/Script)
-
-- Hilfsmittel
-    - welche?
-
-
-
-
-
-1. JSON
-https://www.youtube.com/watch?v=KccgQkIdMnU
-https://www.youtube.com/watch?v=LERhbq-0S7Y 
-- Objekt
-- formatter?
-
-
-2. NodeJS
-https://www.youtube.com/watch?v=q-xS25lsN3I
-https://www.youtube.com/watch?v=ENrzD9HAZK4&t=1s
-
-- Callbacks
-- Promisses
-
-
-3. Dateipfad über CMDLine
-https://www.youtube.com/watch?v=p995SdRXw_E
-https://nodejs.org/api/path.html
-
-- __filename und __dirname sind die sinzigen var mit double underscore.
-- Paths werden über Windows und POSIX Systeme anders gehandhabt.
-- Template Literals (Backticks (``)) beim einfügen komplexer Ausdrücke benutzen. nicht in Anführungszeichen ("").
-- Wir können Variablen über CMDline nutzen
-
-
-4. PDF lesen
-https://www.youtube.com/watch?v=THauKA1p7po
-https://www.npmjs.com/package/pdf-parse
-https://www.npmjs.com/package/pdfreader
-https://wiki.selfhtml.org/wiki/JavaScript/Anweisung/Automatische_Semikolons
-https://www.w3schools.com/js/js_if_else.asp
-https://www.youtube.com/watch?v=p995SdRXw_E
-
-- npm module erleichtern dir extrem dein Leben
-- imprort statements können sowohl spezifisch, als auch generisch sein
-  -> Wenn generisch, muss const name beigefügt werden.
-- der Javascript Parser fügt automatisch ; nach einem befehl ein.
-
-
-6. Wie funktioniert Javascript lol
-- mit functions, damit alles übersichtlicher ist.
-
-
-7. Daten in JSON parsen
-https://javascript.info/json
-- Alle Objekte sind JSON
-
-
-8. Daten finden & how to prompt engineering
-https://www.youtube.com/watch?v=JirLkboYAEo
-https://github.com/andydunkel/translate.js
-
-
-
-9. Clean Code
-https://regexr.com
-- einrücken mit tab oder schift+tab
-
-
-10. Lvl 2
-
-11. Lvl 3
-
-12. Lvl 4
-
-13. Lvl 5
+**Stand:**
+Ich werde das Projekt vorerst nicht weiterentwickeln, da ich einen größeren Mehrwert für meine Skills sehe, wenn ich an anderen Projekten arbeite,
+außerdem hat das fertige Skript keinen Wert für mich, da ich es persönlich nicht einsetzten werde.
